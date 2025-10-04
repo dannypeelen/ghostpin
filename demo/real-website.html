@@ -395,8 +395,14 @@
             <h1>Human-trusted payments with machine-grade certainty.</h1>
             <p>Every interaction is cryptographically bound to this page, your device, and your biometric identity. GhostPIN keeps the experience fluid and familiar while fortifying every checkout against advanced phishing.</p>
             <div class="cta-row">
-                <button class="primary-cta" onclick="initiateSecurePayment(event, 9999, 'Premium Security Package')">
-                    Start a secure checkout demo
+                <button
+                    class="primary-cta"
+                    data-ghostpin="checkout"
+                    data-amount="9999"
+                    data-description="Premium Security Package"
+                    data-reference-prefix="hero-order"
+                >
+                    Pay with PayPal
                 </button>
                 <div class="system-status">
                     <span class="system-status-dot"></span>
@@ -411,8 +417,14 @@
                 <h2 class="product-title">Premium Security Package</h2>
                 <div class="product-price">$99.99</div>
                 <p class="product-description">Adaptive fraud protection backed by WebAuthn biometrics and real-time GhostPIN analytics.</p>
-                <button class="checkout-btn" data-ghostpin-checkout onclick="initiateSecurePayment(event, 9999, 'Premium Security Package')">
-                    <span>🔐 Pay Securely with GhostPIN</span>
+                <button
+                    class="checkout-btn"
+                    data-ghostpin="checkout"
+                    data-amount="9999"
+                    data-description="Premium Security Package"
+                    data-items="GhostPIN Premium Security Package"
+                >
+                    <span>Pay with PayPal</span>
                 </button>
             </article>
 
@@ -421,8 +433,14 @@
                 <h2 class="product-title">Enterprise Security Suite</h2>
                 <div class="product-price">$299.99</div>
                 <p class="product-description">End-to-end attestation for large-scale payment flows with deep telemetry and policy orchestration.</p>
-                <button class="checkout-btn" data-ghostpin-checkout onclick="initiateSecurePayment(event, 29999, 'Enterprise Security Suite')">
-                    <span>🔐 Pay Securely with GhostPIN</span>
+                <button
+                    class="checkout-btn"
+                    data-ghostpin="checkout"
+                    data-amount="29999"
+                    data-description="Enterprise Security Suite"
+                    data-items="GhostPIN Enterprise Security Suite"
+                >
+                    <span>Pay with PayPal</span>
                 </button>
             </article>
         </section>
@@ -460,92 +478,18 @@
         <div id="status"></div>
     </div>
 
-    <!-- GhostPIN Enhanced SDK -->
+    <!-- GhostPIN SDK -->
+    <script src="../sdk/ghostpin.js"></script>
     <script src="../sdk/ghostpin-enhanced.js"></script>
-    <script 
-        src="../sdk/ghostpin.js"
-        data-merchant-id="secure-store"
-        data-api-url="http://localhost:3001">
+    <script id="ghostpin-config" type="application/json">
+        {
+            "merchantId": "secure-store",
+            "apiUrl": "http://localhost:3001",
+            "capture": true,
+            "captureEndpoint": "/capture-payment",
+            "riskPolicy": "secure_store_high_assurance"
+        }
     </script>
-
-    <script>
-        let paymentInProgress = false;
-
-        async function initiateSecurePayment(event, amount, description) {
-            if (paymentInProgress) {
-                showStatus('Payment already in progress...', 'info');
-                return;
-            }
-
-            paymentInProgress = true;
-            const btn = event.currentTarget;
-
-            try {
-                btn.disabled = true;
-                btn.innerHTML = '<span>🔐 Verifying...</span>';
-                showStatus('Initiating GhostPIN two-way handshake...', 'info');
-
-                if (!window.GhostPINEnhanced) {
-                    throw new Error('GhostPIN Enhanced SDK not loaded');
-                }
-
-                const ghostpin = new window.GhostPINEnhanced({
-                    merchantId: 'secure-store',
-                    apiUrl: 'http://localhost:3001'
-                });
-
-                const result = await ghostpin.initiateHandshake({
-                    amount: amount,
-                    currency: 'USD',
-                    description: description,
-                    merchant_reference: 'order-' + Date.now()
-                }, {
-                    targetElement: btn,
-                    requireBiometric: true
-                });
-
-                if (result.verified) {
-                    showStatus(`✅ Two-way handshake successful. Risk score: ${(result.risk_score * 100).toFixed(1)}%`, 'success');
-                    btn.innerHTML = '<span>✅ Handshake Verified</span>';
-                    btn.style.background = 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
-                    btn.style.color = '#022c22';
-
-                    setTimeout(() => {
-                        processPayment(result);
-                    }, 1000);
-                } else {
-                    throw new Error(result.reason || 'Handshake verification failed');
-                }
-
-            } catch (error) {
-                console.error('GhostPIN handshake failed:', error);
-                showStatus(`❌ Handshake failed: ${error.message}`, 'error');
-                btn.innerHTML = '<span>🔐 Try Again</span>';
-                btn.disabled = false;
-            } finally {
-                paymentInProgress = false;
-            }
-        }
-
-        function showStatus(message, type) {
-            const status = document.getElementById('status');
-            status.textContent = message;
-            status.className = type ? `status ${type}` : 'status';
-        }
-
-        function processPayment(handshakeResult) {
-            showStatus('Processing payment with verified handshake...', 'info');
-
-            setTimeout(() => {
-                showStatus('🎉 Payment successful! Two-way authentication completed.', 'success');
-            }, 2000);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🛡️ Authentic Secure Store Loaded');
-            console.log('This is a REAL website with proper GhostPIN integration');
-            console.log('Click any checkout button to see the two-way handshake in action!');
-        });
-    </script>
+    <script src="/demo/ghostpin-checkout.js"></script>
 </body>
 </html>

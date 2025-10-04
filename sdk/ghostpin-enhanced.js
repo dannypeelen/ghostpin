@@ -178,7 +178,7 @@
      */
     extractCriticalElements() {
       const elements = {
-        checkout_button: document.querySelector('[data-ghostpin-checkout]')?.outerHTML,
+        checkout_button: document.querySelector('[data-ghostpin="checkout"]')?.outerHTML,
         payment_form: document.querySelector('form[data-ghostpin-payment]')?.outerHTML,
         amount_display: document.querySelector('[data-ghostpin-amount]')?.textContent,
         merchant_info: document.querySelector('[data-ghostpin-merchant]')?.textContent
@@ -274,12 +274,15 @@
      * Utility: Generate visual nonce
      */
     async generateVisualNonce(paymentIntent, targetElement) {
+      if (typeof super.generateVisualNonce === 'function') {
+        return super.generateVisualNonce(paymentIntent, targetElement);
+      }
+
       const timestamp = Math.floor(Date.now() / 1000);
       const random = this.generateRandomBytes(32);
-      const nonceData = `${this.merchantId}:${timestamp}:${JSON.stringify(paymentIntent)}:${random}`;
+      const nonceData = `${this.merchantId || ''}:${timestamp}:${JSON.stringify(paymentIntent)}:${random}`;
       const nonce = await this.sha256(nonceData);
 
-      // Embed nonce visually if target element provided
       if (targetElement) {
         await this.embedVisualNonce(targetElement, nonce);
       }
@@ -321,8 +324,11 @@
      * Embed nonce visually
      */
     async embedVisualNonce(element, nonce) {
+      if (typeof super.embedVisualNonce === 'function') {
+        return super.embedVisualNonce(element, nonce);
+      }
+
       try {
-        // Simple visual embedding - store in data attribute
         element.setAttribute('data-ghostpin-nonce', nonce);
         element.style.border = '2px solid #10b981';
         element.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.3)';

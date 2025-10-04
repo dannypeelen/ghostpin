@@ -402,8 +402,14 @@
             <h1>This interface fails GhostPIN attestation.</h1>
             <p>Attackers try to mirror trusted flows. GhostPIN inspects the page, the merchant identity, and the handshake proof before a single credential can move. Watch how the experience blocks the attempt in real time.</p>
             <div class="cta-row">
-                <button class="primary-cta" onclick="attemptFakePayment(event, 9999, 'Fake Premium Package')">
-                    Trigger the blocked checkout
+                <button
+                    class="primary-cta"
+                    data-ghostpin="checkout"
+                    data-amount="9999"
+                    data-description="Premium Security Package"
+                    data-reference-prefix="hero-order"
+                >
+                    Pay with PayPal
                 </button>
                 <div class="system-status">
                     <span class="system-status-dot"></span>
@@ -418,8 +424,14 @@
                 <h2 class="product-title">Premium Security Package</h2>
                 <div class="product-price">$99.99</div>
                 <p class="product-description">⚠️ This checkout flow is fabricated. GhostPIN will break the handshake before payment data can be requested.</p>
-                <button class="checkout-btn" data-ghostpin-checkout onclick="attemptFakePayment(event, 9999, 'Fake Premium Package')">
-                    <span>💳 Pay with PayPal (Fake)</span>
+                <button
+                    class="checkout-btn"
+                    data-ghostpin="checkout"
+                    data-amount="9999"
+                    data-description="Premium Security Package"
+                    data-items="Premium Security Package Spoof"
+                >
+                    <span>Pay with PayPal</span>
                 </button>
             </article>
 
@@ -428,8 +440,14 @@
                 <h2 class="product-title">Enterprise Security Suite</h2>
                 <div class="product-price">$299.99</div>
                 <p class="product-description">⚠️ Domain mismatch, missing merchant registration, and no visual nonce - GhostPIN will flag every step.</p>
-                <button class="checkout-btn" data-ghostpin-checkout onclick="attemptFakePayment(event, 29999, 'Fake Enterprise Suite')">
-                    <span>💳 Pay with PayPal (Fake)</span>
+                <button
+                    class="checkout-btn"
+                    data-ghostpin="checkout"
+                    data-amount="29999"
+                    data-description="Enterprise Security Suite"
+                    data-items="Enterprise Security Suite Spoof"
+                >
+                    <span>Pay with PayPal</span>
                 </button>
             </article>
         </section>
@@ -467,100 +485,16 @@
         <div id="status"></div>
     </div>
 
-    <!-- GhostPIN Enhanced SDK (will detect this is fake) -->
+    <!-- GhostPIN SDK -->
+    <script src="../sdk/ghostpin.js"></script>
     <script src="../sdk/ghostpin-enhanced.js"></script>
-    <script 
-        src="../sdk/ghostpin.js"
-        data-merchant-id="fake-paypal"
-        data-api-url="http://localhost:3001">
+    <script id="ghostpin-config" type="application/json">
+        {
+            "apiUrl": "http://localhost:3001",
+            "riskPolicy": "unregistered_merchant_policy",
+            "capture": false
+        }
     </script>
-
-    <script>
-        let paymentInProgress = false;
-
-        async function attemptFakePayment(event, amount, description) {
-            if (paymentInProgress) {
-                showStatus('Payment already in progress...', 'info');
-                return;
-            }
-
-            paymentInProgress = true;
-            const btn = event.currentTarget;
-
-            try {
-                btn.disabled = true;
-                btn.innerHTML = '<span>🔍 Detecting...</span>';
-                showStatus('Attempting fake payment - GhostPIN anomaly checks engaged...', 'warning');
-
-                if (!window.GhostPINEnhanced) {
-                    throw new Error('GhostPIN Enhanced SDK not loaded');
-                }
-
-                const ghostpin = new window.GhostPINEnhanced({
-                    merchantId: 'fake-paypal',
-                    apiUrl: 'http://localhost:3001'
-                });
-
-                const result = await ghostpin.initiateHandshake({
-                    amount: amount,
-                    currency: 'USD',
-                    description: description,
-                    merchant_reference: 'fake-order-' + Date.now()
-                }, {
-                    targetElement: btn,
-                    requireBiometric: true
-                });
-
-                if (result.verified) {
-                    showStatus('✅ Handshake successful!', 'success');
-                } else {
-                    throw new Error(result.reason || 'Handshake verification failed');
-                }
-
-            } catch (error) {
-                console.error('GhostPIN fraud detection:', error);
-                showStatus(`🛡️ GhostPIN FRAUD DETECTION: ${error.message}`, 'error');
-                btn.innerHTML = '<span>🚫 BLOCKED BY GHOSTPIN</span>';
-                btn.style.background = 'linear-gradient(135deg, #7f1d1d 0%, #dc2626 60%, #b91c1c 100%)';
-                btn.disabled = true;
-
-                setTimeout(() => {
-                    showFraudIndicators();
-                }, 1500);
-            } finally {
-                paymentInProgress = false;
-            }
-        }
-
-        function showStatus(message, type) {
-            const status = document.getElementById('status');
-            status.textContent = message;
-            status.className = type ? `status ${type}` : 'status';
-        }
-
-        function showFraudIndicators() {
-            const indicators = [
-                '❌ Suspicious domain detected',
-                '❌ Merchant registration missing',
-                '❌ Domain spoofing attempt confirmed',
-                '❌ Visual nonce absent',
-                '❌ Two-way handshake not supported',
-                '❌ High fraud risk score triggered'
-            ];
-
-            let message = '🛡️ GhostPIN Fraud Detection Results:\n';
-            message += indicators.join('\n');
-            message += '\n\n✅ Payment BLOCKED - user protected from phishing!';
-
-            showStatus(message, 'error');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('⚠️ FAKE PayPal Website Loaded');
-            console.log('This is a PHISHING website that will be detected by GhostPIN');
-            console.log('Click any checkout button to see fraud detection in action!');
-            showStatus('⚠️ This is a FAKE website - GhostPIN will detect and block payments.', 'warning');
-        });
-    </script>
+    <script src="/demo/ghostpin-checkout.js"></script>
 </body>
 </html>

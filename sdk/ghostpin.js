@@ -35,7 +35,7 @@
       this.currentNonce = null;
       this.verificationInProgress = false;
       
-      this.init();
+      this.initPromise = this.init();
     }
 
     /**
@@ -53,9 +53,9 @@
           throw new Error('Web Crypto API not supported');
         }
 
-        // Validate merchant ID
+        // Merchant ID is optional; when absent, backend must infer from origin
         if (!this.merchantId) {
-          throw new Error('Merchant ID is required');
+          console.info('GhostPIN initialized without explicit merchantId; server will infer by origin.');
         }
 
         this.isInitialized = true;
@@ -67,19 +67,31 @@
       }
     }
 
+    async ensureInitialized() {
+      if (this.isInitialized) {
+        return;
+      }
+
+      if (this.initPromise) {
+        await this.initPromise;
+      }
+
+      if (!this.isInitialized) {
+        throw new Error('GhostPIN not initialized');
+      }
+    }
+
     /**
      * Generate visual nonce and embed in checkout button
      */
     async generateVisualNonce(paymentIntent, targetElement) {
       try {
-        if (!this.isInitialized) {
-          throw new Error('GhostPIN not initialized');
-        }
+        await this.ensureInitialized();
 
         // Generate cryptographic nonce
         const timestamp = Math.floor(Date.now() / 1000);
         const random = this.generateRandomBytes(32);
-        const nonceData = `${this.merchantId}:${timestamp}:${JSON.stringify(paymentIntent)}:${random}`;
+        const nonceData = `${this.merchantId || ''}:${timestamp}:${JSON.stringify(paymentIntent)}:${random}`;
         const nonce = await this.sha256(nonceData);
 
         this.currentNonce = nonce;
@@ -147,6 +159,8 @@
      */
     async verifyPayment(paymentIntent, options = {}) {
       try {
+        await this.ensureInitialized();
+
         if (this.verificationInProgress) {
           throw new Error('Verification already in progress');
         }
@@ -219,7 +233,7 @@
       const timestamp = Math.floor(Date.now() / 1000);
       
       const payload = {
-        merchant_id: this.merchantId,
+        merchant_id: this.merchantId || null,
         origin: origin,
         nonce: nonce,
         payment_intent: paymentIntent,

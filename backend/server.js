@@ -27,6 +27,7 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/sdk', express.static(path.join(__dirname, '../sdk')));
+app.use('/demo', express.static(path.join(__dirname, '../demo')));
 
 // Health check
 app.get('/health', (req, res) => {
