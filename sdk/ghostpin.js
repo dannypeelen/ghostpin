@@ -355,18 +355,36 @@
 
   // Auto-initialize if merchant ID is provided via data attributes
   document.addEventListener('DOMContentLoaded', function() {
-    const script = document.querySelector('script[src*="ghostpin.js"]');
-    if (script) {
+    const scripts = Array.from(document.querySelectorAll('script[src*="ghostpin.js"]'));
+    if (scripts.length === 0) {
+      return;
+    }
+
+    scripts.forEach((script, index) => {
       const merchantId = script.getAttribute('data-merchant-id');
       const apiUrl = script.getAttribute('data-api-url');
-      
-      if (merchantId) {
-        window.GhostPIN = new GhostPIN({
-          merchantId: merchantId,
-          apiUrl: apiUrl
-        });
+
+      if (!merchantId) {
+        return;
       }
-    }
+
+      const instance = new GhostPIN({
+        merchantId: merchantId,
+        apiUrl: apiUrl
+      });
+
+      script.__ghostpinInstance = instance;
+
+      if (index === 0) {
+        window.GhostPINClient = instance;
+        window.GhostPINInstance = instance;
+        window.__ghostpin = instance;
+
+        window.dispatchEvent(new CustomEvent('ghostpin:ready', {
+          detail: instance
+        }));
+      }
+    });
   });
 
   // Export for module systems

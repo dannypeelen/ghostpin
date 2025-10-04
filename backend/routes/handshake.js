@@ -1,7 +1,11 @@
 const express = require('express');
 const crypto = require('crypto');
-const { verifyHandshake, validateMutualProof, detectFraudPatterns } = require('../services/handshake');
-const { logHandshakeAttempt } = require('../services/analytics');
+const {
+  verifyHandshake,
+  validateMutualProof,
+  detectFraudPatterns,
+  logHandshakeAttempt
+} = require('../services/handshake');
 
 const router = express.Router();
 

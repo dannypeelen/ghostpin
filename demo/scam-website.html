@@ -3,185 +3,466 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PayPal Security Center - FAKE WEBSITE</title>
+    <title>PayPal Security Center | Spoofed Experience</title>
     <style>
+        :root {
+            color-scheme: dark;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
+            margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            background: radial-gradient(120% 120% at 50% -10%, #7f1d1d 0%, #111827 40%, #020617 100%);
+            color: #f5f5f5;
             min-height: 100vh;
-        }
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .logo {
-            font-size: 32px;
-            font-weight: bold;
-            color: #003087;
-            margin-bottom: 10px;
-        }
-        .warning-badge {
-            display: inline-flex;
+            padding: 56px 24px 72px;
+            display: flex;
             align-items: center;
-            background: #dc2626;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-top: 10px;
+            justify-content: center;
         }
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        .product-card {
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-        .product-card:hover {
-            border-color: #dc2626;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.1);
-        }
-        .product-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #1f2937;
-            margin-bottom: 10px;
-        }
-        .product-price {
-            font-size: 24px;
-            font-weight: bold;
-            color: #dc2626;
-            margin-bottom: 15px;
-        }
-        .checkout-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+
+        .container {
+            width: min(1100px, 100%);
+            background: rgba(17, 24, 39, 0.82);
+            border: 1px solid rgba(239, 68, 68, 0.28);
+            border-radius: 32px;
+            padding: clamp(32px, 6vw, 64px);
+            box-shadow: 0 40px 80px rgba(2, 6, 23, 0.55);
+            backdrop-filter: blur(32px);
             position: relative;
             overflow: hidden;
         }
-        .checkout-btn:hover {
-            background: linear-gradient(135deg, #b91c1c, #991b1b);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+
+        .container::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(90% 160% at 0% 0%, rgba(248, 113, 113, 0.22), transparent),
+                        radial-gradient(130% 180% at 100% 0%, rgba(185, 28, 28, 0.16), transparent);
+            pointer-events: none;
         }
-        .warning-features {
-            background: #fef2f2;
-            border: 2px solid #dc2626;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: clamp(40px, 6vw, 64px);
         }
-        .warning-features h3 {
-            color: #dc2626;
-            margin-bottom: 15px;
+
+        .brand {
             display: flex;
             align-items: center;
+            gap: 16px;
         }
+
+        .brand-mark {
+            display: grid;
+            place-items: center;
+            width: 52px;
+            height: 52px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #f97316 0%, #ef4444 50%, #991b1b 100%);
+            color: #fff7ed;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .brand-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .brand-name {
+            font-size: clamp(24px, 3vw, 32px);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #f5f5f4;
+        }
+
+        .brand-subtitle {
+            font-size: 14px;
+            color: rgba(250, 204, 21, 0.75);
+        }
+
+        .nav-warning {
+            padding: 12px 18px;
+            border-radius: 999px;
+            background: rgba(248, 113, 113, 0.16);
+            border: 1px solid rgba(248, 113, 113, 0.38);
+            color: #fca5a5;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(16px, 3vw, 28px);
+            margin-bottom: clamp(40px, 6vw, 64px);
+            max-width: 640px;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(36px, 5vw, 58px);
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            color: #fee2e2;
+        }
+
+        .hero p {
+            margin: 0;
+            font-size: clamp(16px, 2.6vw, 20px);
+            line-height: 1.6;
+            color: rgba(254, 226, 226, 0.78);
+        }
+
+        .cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .primary-cta {
+            padding: 16px 26px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #fb7185 0%, #ef4444 50%, #991b1b 100%);
+            border: none;
+            color: #fff7ed;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            box-shadow: 0 24px 48px rgba(248, 113, 113, 0.32);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .primary-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 32px 56px rgba(248, 113, 113, 0.42);
+        }
+
+        .system-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 18px;
+            border-radius: 14px;
+            background: rgba(248, 113, 113, 0.08);
+            border: 1px solid rgba(248, 113, 113, 0.26);
+            font-size: 14px;
+            color: rgba(254, 226, 226, 0.82);
+        }
+
+        .system-status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: #f97316;
+            box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.18);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: clamp(20px, 4vw, 32px);
+            margin-bottom: clamp(40px, 6vw, 64px);
+        }
+
+        .product-card {
+            position: relative;
+            border-radius: 24px;
+            padding: 30px;
+            background: linear-gradient(145deg, rgba(136, 19, 55, 0.28), rgba(159, 18, 57, 0.12));
+            border: 1px solid rgba(252, 165, 165, 0.32);
+            box-shadow: inset 0 1px 0 rgba(254, 226, 226, 0.18), 0 16px 32px rgba(15, 23, 42, 0.32);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card::after {
+            content: "";
+            position: absolute;
+            inset: 1px;
+            border-radius: 24px;
+            border: 1px solid rgba(254, 202, 202, 0.08);
+            pointer-events: none;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: inset 0 1px 0 rgba(254, 226, 226, 0.3), 0 28px 48px rgba(15, 23, 42, 0.48);
+        }
+
+        .product-tag {
+            align-self: flex-start;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(254, 226, 226, 0.12);
+            border: 1px solid rgba(248, 113, 113, 0.32);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: rgba(254, 202, 202, 0.76);
+        }
+
+        .product-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #fee2e2;
+            letter-spacing: -0.01em;
+        }
+
+        .product-price {
+            font-size: 30px;
+            font-weight: 600;
+            color: #f87171;
+            letter-spacing: -0.02em;
+        }
+
+        .product-description {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: rgba(254, 202, 202, 0.76);
+        }
+
+        .checkout-btn {
+            margin-top: auto;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #fb7185 0%, #ef4444 58%, #7f1d1d 100%);
+            color: #fff5f5;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            box-shadow: 0 20px 44px rgba(248, 113, 113, 0.28);
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 28px 52px rgba(248, 113, 113, 0.36);
+        }
+
+        .checkout-btn:disabled {
+            cursor: not-allowed;
+            filter: grayscale(0.3);
+            opacity: 0.7;
+            box-shadow: none;
+        }
+
+        .checkout-btn span {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .warning-features {
+            display: grid;
+            gap: 28px;
+            padding: clamp(24px, 4vw, 40px);
+            border-radius: 28px;
+            background: linear-gradient(155deg, rgba(153, 27, 27, 0.16), rgba(220, 38, 38, 0.18));
+            border: 1px solid rgba(248, 113, 113, 0.28);
+        }
+
+        .warning-features h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fdba74;
+        }
+
         .warning-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px 20px;
         }
+
         .warning-item {
             display: flex;
-            align-items: center;
-            color: #dc2626;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 15px;
+            color: rgba(254, 226, 226, 0.82);
+        }
+
+        .warning-icon {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            border-radius: 6px;
+            background: rgba(248, 113, 113, 0.18);
+            border: 1px solid rgba(248, 113, 113, 0.32);
+        }
+
+        #status {
+            margin-top: clamp(28px, 5vw, 40px);
+            padding: 20px 22px;
+            border-radius: 20px;
             font-weight: 500;
+            font-size: 15px;
+            border: 1px solid transparent;
+            background: rgba(248, 113, 113, 0.12);
+            color: rgba(254, 226, 226, 0.85);
+            white-space: pre-line;
+            transition: background 0.3s ease, border 0.3s ease, color 0.3s ease;
         }
-        .status {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 600;
-        }
+
         .status.success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
+            background: rgba(20, 184, 166, 0.16);
+            border-color: rgba(34, 197, 94, 0.35);
+            color: #bbf7d0;
         }
+
         .status.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
+            background: rgba(248, 113, 113, 0.2);
+            border-color: rgba(252, 211, 77, 0.38);
+            color: #fee2e2;
         }
+
         .status.info {
-            background: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #93c5fd;
+            background: rgba(59, 130, 246, 0.14);
+            border-color: rgba(96, 165, 250, 0.32);
+            color: #cae3ff;
         }
+
         .status.warning {
-            background: #fef3c7;
-            color: #92400e;
-            border: 1px solid #fbbf24;
+            background: rgba(250, 204, 21, 0.12);
+            border-color: rgba(251, 191, 36, 0.38);
+            color: #fef08a;
+        }
+
+        @media (max-width: 720px) {
+            body {
+                padding: 32px 18px 48px;
+            }
+
+            .container {
+                border-radius: 24px;
+            }
+
+            .nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 18px;
+            }
+
+            .cta-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .system-status {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .product-card {
+                padding: 24px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div class="logo">💳 PayPal Security Center</div>
-            <p>⚠️ THIS IS A FAKE WEBSITE - DEMO PURPOSES ONLY</p>
-            <div class="warning-badge">
-                ⚠️ PHISHING WEBSITE DETECTED
+        <header class="nav">
+            <div class="brand">
+                <div class="brand-mark">PP</div>
+                <div class="brand-copy">
+                    <span class="brand-name">PayPal Security Center</span>
+                    <span class="brand-subtitle">Spoofed domain | no attestation</span>
+                </div>
             </div>
-        </div>
+            <div class="nav-warning">Phishing signature detected</div>
+        </header>
 
-        <div class="product-grid">
-            <div class="product-card">
-                <div class="product-title">Premium Security Package</div>
+        <section class="hero">
+            <h1>This interface fails GhostPIN attestation.</h1>
+            <p>Attackers try to mirror trusted flows. GhostPIN inspects the page, the merchant identity, and the handshake proof before a single credential can move. Watch how the experience blocks the attempt in real time.</p>
+            <div class="cta-row">
+                <button class="primary-cta" onclick="attemptFakePayment(event, 9999, 'Fake Premium Package')">
+                    Trigger the blocked checkout
+                </button>
+                <div class="system-status">
+                    <span class="system-status-dot"></span>
+                    GhostPIN guard active
+                </div>
+            </div>
+        </section>
+
+        <section class="product-grid">
+            <article class="product-card">
+                <span class="product-tag">Spoofed Offer</span>
+                <h2 class="product-title">Premium Security Package</h2>
                 <div class="product-price">$99.99</div>
-                <p>⚠️ This is a fake checkout - GhostPIN will detect and block this</p>
-                <button class="checkout-btn" data-ghostpin-checkout onclick="attemptFakePayment(9999, 'Fake Premium Package')">
-                    💳 Pay with PayPal (FAKE)
+                <p class="product-description">⚠️ This checkout flow is fabricated. GhostPIN will break the handshake before payment data can be requested.</p>
+                <button class="checkout-btn" data-ghostpin-checkout onclick="attemptFakePayment(event, 9999, 'Fake Premium Package')">
+                    <span>💳 Pay with PayPal (Fake)</span>
                 </button>
-            </div>
+            </article>
 
-            <div class="product-card">
-                <div class="product-title">Enterprise Security Suite</div>
+            <article class="product-card">
+                <span class="product-tag">Spoofed Offer</span>
+                <h2 class="product-title">Enterprise Security Suite</h2>
                 <div class="product-price">$299.99</div>
-                <p>⚠️ This is a fake checkout - GhostPIN will detect and block this</p>
-                <button class="checkout-btn" data-ghostpin-checkout onclick="attemptFakePayment(29999, 'Fake Enterprise Suite')">
-                    💳 Pay with PayPal (FAKE)
+                <p class="product-description">⚠️ Domain mismatch, missing merchant registration, and no visual nonce - GhostPIN will flag every step.</p>
+                <button class="checkout-btn" data-ghostpin-checkout onclick="attemptFakePayment(event, 29999, 'Fake Enterprise Suite')">
+                    <span>💳 Pay with PayPal (Fake)</span>
                 </button>
-            </div>
-        </div>
+            </article>
+        </section>
 
-        <div class="warning-features">
-            <h3>⚠️ This Fake Website Will Be Detected By GhostPIN</h3>
+        <section class="warning-features">
+            <h3>⚠️ GhostPIN detection signals</h3>
             <div class="warning-list">
-                <div class="warning-item">❌ Domain spoofing detected (paypal-security.com vs paypal.com)</div>
-                <div class="warning-item">❌ No proper merchant registration</div>
-                <div class="warning-item">❌ Missing visual nonce embedding</div>
-                <div class="warning-item">❌ No two-way handshake capability</div>
-                <div class="warning-item">❌ Suspicious domain patterns</div>
-                <div class="warning-item">❌ No cryptographic proof of authenticity</div>
+                <div class="warning-item">
+                    <span class="warning-icon"></span>
+                    Domain spoofing (paypal-security.com != paypal.com)
+                </div>
+                <div class="warning-item">
+                    <span class="warning-icon"></span>
+                    Merchant registry lookup returns no valid attestation
+                </div>
+                <div class="warning-item">
+                    <span class="warning-icon"></span>
+                    Visual nonce missing - page integrity cannot be validated
+                </div>
+                <div class="warning-item">
+                    <span class="warning-icon"></span>
+                    GhostPIN handshake fails cryptographic challenge
+                </div>
+                <div class="warning-item">
+                    <span class="warning-icon"></span>
+                    Suspicious script provenance and layout fingerprint
+                </div>
+                <div class="warning-item">
+                    <span class="warning-icon"></span>
+                    Elevated risk score triggers pre-emptive block
+                </div>
             </div>
-        </div>
+        </section>
 
         <div id="status"></div>
     </div>
@@ -197,33 +478,29 @@
     <script>
         let paymentInProgress = false;
 
-        async function attemptFakePayment(amount, description) {
+        async function attemptFakePayment(event, amount, description) {
             if (paymentInProgress) {
                 showStatus('Payment already in progress...', 'info');
                 return;
             }
 
             paymentInProgress = true;
-            const btn = event.target;
-            const status = document.getElementById('status');
-            
-            try {
-                // Update UI
-                btn.disabled = true;
-                btn.textContent = '🔍 Detecting...';
-                showStatus('Attempting fake payment - GhostPIN will detect this...', 'warning');
+            const btn = event.currentTarget;
 
-                // Initialize enhanced GhostPIN (this will fail)
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<span>🔍 Detecting...</span>';
+                showStatus('Attempting fake payment - GhostPIN anomaly checks engaged...', 'warning');
+
                 if (!window.GhostPINEnhanced) {
                     throw new Error('GhostPIN Enhanced SDK not loaded');
                 }
 
                 const ghostpin = new window.GhostPINEnhanced({
-                    merchantId: 'fake-paypal', // This merchant doesn't exist
+                    merchantId: 'fake-paypal',
                     apiUrl: 'http://localhost:3001'
                 });
 
-                // Attempt two-way handshake (this will fail)
                 const result = await ghostpin.initiateHandshake({
                     amount: amount,
                     currency: 'USD',
@@ -234,26 +511,22 @@
                     requireBiometric: true
                 });
 
-                // This should never execute due to fraud detection
                 if (result.verified) {
-                    showStatus(`✅ Handshake successful!`, 'success');
+                    showStatus('✅ Handshake successful!', 'success');
                 } else {
                     throw new Error(result.reason || 'Handshake verification failed');
                 }
 
             } catch (error) {
                 console.error('GhostPIN fraud detection:', error);
-                
-                // Show fraud detection message
                 showStatus(`🛡️ GhostPIN FRAUD DETECTION: ${error.message}`, 'error');
-                btn.textContent = '🚫 BLOCKED BY GHOSTPIN';
-                btn.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
+                btn.innerHTML = '<span>🚫 BLOCKED BY GHOSTPIN</span>';
+                btn.style.background = 'linear-gradient(135deg, #7f1d1d 0%, #dc2626 60%, #b91c1c 100%)';
                 btn.disabled = true;
-                
-                // Show fraud indicators
+
                 setTimeout(() => {
                     showFraudIndicators();
-                }, 2000);
+                }, 1500);
             } finally {
                 paymentInProgress = false;
             }
@@ -262,36 +535,31 @@
         function showStatus(message, type) {
             const status = document.getElementById('status');
             status.textContent = message;
-            status.className = `status ${type}`;
+            status.className = type ? `status ${type}` : 'status';
         }
 
         function showFraudIndicators() {
             const indicators = [
                 '❌ Suspicious domain detected',
-                '❌ No merchant registration found',
-                '❌ Domain spoofing attempt detected',
-                '❌ Missing visual nonce embedding',
-                '❌ No two-way handshake capability',
-                '❌ High fraud risk score detected'
+                '❌ Merchant registration missing',
+                '❌ Domain spoofing attempt confirmed',
+                '❌ Visual nonce absent',
+                '❌ Two-way handshake not supported',
+                '❌ High fraud risk score triggered'
             ];
 
-            let message = '🛡️ GhostPIN Fraud Detection Results:\n\n';
-            indicators.forEach(indicator => {
-                message += indicator + '\n';
-            });
-            message += '\n✅ Payment BLOCKED - User protected from phishing!';
+            let message = '🛡️ GhostPIN Fraud Detection Results:\n';
+            message += indicators.join('\n');
+            message += '\n\n✅ Payment BLOCKED - user protected from phishing!';
 
             showStatus(message, 'error');
         }
 
-        // Listen for GhostPIN events
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
             console.log('⚠️ FAKE PayPal Website Loaded');
             console.log('This is a PHISHING website that will be detected by GhostPIN');
             console.log('Click any checkout button to see fraud detection in action!');
-            
-            // Show initial warning
-            showStatus('⚠️ This is a FAKE website - GhostPIN will detect and block payments', 'warning');
+            showStatus('⚠️ This is a FAKE website - GhostPIN will detect and block payments.', 'warning');
         });
     </script>
 </body>

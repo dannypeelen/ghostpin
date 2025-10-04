@@ -7,6 +7,7 @@ require('dotenv').config();
 const verifierRoutes = require('./routes/verifier');
 const analyticsRoutes = require('./routes/analytics');
 const dashboardRoutes = require('./routes/dashboard');
+const handshakeRoutes = require('./routes/handshake');
 const { initializeDatabase } = require('./utils/database');
 const { initializeRedis } = require('./utils/redis');
 
@@ -25,6 +26,7 @@ app.use(cors({
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use('/sdk', express.static(path.join(__dirname, '../sdk')));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -48,6 +50,7 @@ app.get("/scam", (req, res) => {
 app.use('/api/verify', verifierRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/verify-handshake', handshakeRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {

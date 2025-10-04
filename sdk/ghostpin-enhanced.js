@@ -6,18 +6,20 @@
 (function(window) {
   'use strict';
 
-  class GhostPINEnhanced {
+  const BaseGhostPIN = window.GhostPIN;
+
+  class GhostPINFallback {
     constructor(options = {}) {
-      // Initialize base GhostPIN if available, otherwise create minimal implementation
-      if (window.GhostPIN) {
-        Object.setPrototypeOf(this, new window.GhostPIN(options));
-      } else {
-        // Fallback implementation
-        this.merchantId = options.merchantId;
-        this.apiUrl = options.apiUrl || 'http://localhost:3001';
-        this.isInitialized = true;
-      }
-      
+      this.merchantId = options.merchantId;
+      this.apiUrl = options.apiUrl || 'http://localhost:3001';
+      this.isInitialized = true;
+    }
+  }
+
+  class GhostPINEnhanced extends (BaseGhostPIN || GhostPINFallback) {
+    constructor(options = {}) {
+      super(options);
+
       this.handshakeState = 'idle';
       this.merchantChallenge = null;
       this.userChallenge = null;
