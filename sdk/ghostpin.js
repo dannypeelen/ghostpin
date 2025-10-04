@@ -429,6 +429,14 @@
       }
 
       try {
+        if (typeof window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable === 'function') {
+          const platformAvailable = await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+          const hasCredentialIds = Array.isArray(this.config.allowCredentialIds) && this.config.allowCredentialIds.length > 0;
+          if (!platformAvailable && !hasCredentialIds) {
+            return { success: false, error: 'webauthn_unavailable' };
+          }
+        }
+
         const challengeInput = `${this.merchantId || ''}|${domain}|${ts}|${intentHash}|${visualNonceHash}`;
         const challengeBuffer = await sha256Buffer(challengeInput);
         const hostname = (() => {
@@ -450,24 +458,36 @@
           publicKey.allowCredentials = this.config.allowCredentialIds.map((id) => ({
             type: 'public-key',
             id: base64UrlToArrayBuffer(id),
-            transports: this.transports
+            transports: ['internal']
           }));
         }
 
-        const credential = await navigator.credentials.get({ publicKey });
-        const payload = {
-          rawId: bufferToBase64Url(credential.rawId),
-          signature: bufferToBase64Url(credential.response.signature),
-          clientDataJSON: bufferToBase64Url(credential.response.clientDataJSON),
-          authenticatorData: bufferToBase64Url(credential.response.authenticatorData),
-          userHandle: credential.response.userHandle ? bufferToBase64Url(credential.response.userHandle) : null
-        };
+        const mediation = this.config.mediation || 'optional';
+        const credential = await navigator.credentials.get({ publicKey, mediation });
+        const payload = this.formatWebAuthnPayload(credential);
 
         return { success: true, payload };
       } catch (error) {
-        console.warn('GhostPIN WebAuthn attempt failed:', error);
-        return { success: false, error: error?.message || 'webauthn_failed' };
+        const name = error?.name || '';
+        const code = (name === 'NotAllowedError' || name === 'AbortError') ? 'user_cancelled' : 'webauthn_failed';
+        console.warn('GhostPIN WebAuthn attempt failed:', name, error?.message || '');
+        return { success: false, error: code };
       }
+    }
+
+    formatWebAuthnPayload(credential) {
+      if (!credential) {
+        return null;
+      }
+
+      const response = credential.response || {};
+      return {
+        rawId: credential.rawId ? bufferToBase64Url(credential.rawId) : null,
+        signature: response.signature ? bufferToBase64Url(response.signature) : null,
+        clientDataJSON: response.clientDataJSON ? bufferToBase64Url(response.clientDataJSON) : null,
+        authenticatorData: response.authenticatorData ? bufferToBase64Url(response.authenticatorData) : null,
+        userHandle: response.userHandle ? bufferToBase64Url(response.userHandle) : null
+      };
     }
 
     async tryOtpFallback() {
