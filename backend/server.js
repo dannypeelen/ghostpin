@@ -5,13 +5,16 @@ const path = require('path');
 require('dotenv').config();
 
 const verifierRoutes = require('./routes/verifier');
-const analyticsRoutes = require('./routes/analytics');
-const dashboardRoutes = require('./routes/dashboard');
+const handshakeRoutes = require('./routes/handshake-simple'); // Use simplified handshake
 const { initializeDatabase } = require('./utils/database');
 const { initializeRedis } = require('./utils/redis');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Security
 app.use(helmet({
@@ -19,12 +22,9 @@ app.use(helmet({
 }));
 
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:3001'],
   credentials: true
 }));
-
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -44,10 +44,9 @@ app.get("/scam", (req, res) => {
   res.sendFile(path.join(__dirname, "../demo/scam-website.html"));
 });
 
-// API routes
+// API routes - Core functionality only
 app.use('/api/verify', verifierRoutes);
-app.use('/api/analytics', analyticsRoutes);
-app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/verify-handshake', handshakeRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -58,29 +57,37 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 fallback
-app.use('*', (req, res) => {
+// 404 handler
+app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Bootstrapping
+// Initialize services and start server
 async function startServer() {
   try {
-    await initializeDatabase();
-    await initializeRedis();
+    console.log('🚀 Starting GhostPIN server...');
     
+    // Initialize database
+    await initializeDatabase();
+    console.log('✅ Database connected');
+    
+    // Initialize Redis
+    await initializeRedis();
+    console.log('✅ Redis connected');
+    
+    // Start server
     app.listen(PORT, () => {
-      console.log(`🚀 GhostPIN Backend running on port ${PORT}`);
+      console.log(`✅ GhostPIN server running on port ${PORT}`);
       console.log(`📊 Health check: http://localhost:${PORT}/health`);
-      console.log(`🔹 Real site: http://localhost:${PORT}/real`);
-      console.log(`🔸 Scam site: http://localhost:${PORT}/scam`);
+      console.log(`🛡️ Real demo: http://localhost:${PORT}/real`);
+      console.log(`⚠️ Scam demo: http://localhost:${PORT}/scam`);
+      console.log(`🔐 Handshake API: http://localhost:${PORT}/api/verify-handshake`);
     });
+    
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('❌ Failed to start server:', error);
     process.exit(1);
   }
 }
 
 startServer();
-
-module.exports = app;

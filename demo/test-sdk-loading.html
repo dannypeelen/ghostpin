@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDK Loading Test</title>
+</head>
+<body>
+    <h1>SDK Loading Test</h1>
+    <div id="status"></div>
+    <button onclick="testSDKs()">Test SDK Loading</button>
+
+    <!-- Load base SDK first -->
+    <script 
+        src="../sdk/ghostpin.js"
+        data-merchant-id="test-merchant"
+        data-api-url="http://localhost:3001">
+    </script>
+    <!-- Then load enhanced SDK -->
+    <script src="../sdk/ghostpin-enhanced.js"></script>
+
+    <script>
+        function testSDKs() {
+            const status = document.getElementById('status');
+            let results = [];
+
+            // Test 1: Check if base SDK loaded
+            if (window.GhostPIN) {
+                results.push('✅ Base GhostPIN SDK loaded');
+                console.log('Base GhostPIN:', window.GhostPIN);
+            } else {
+                results.push('❌ Base GhostPIN SDK NOT loaded');
+            }
+
+            // Test 2: Check if enhanced SDK loaded
+            if (window.GhostPINEnhanced) {
+                results.push('✅ Enhanced GhostPIN SDK loaded');
+                console.log('Enhanced GhostPIN:', window.GhostPINEnhanced);
+            } else {
+                results.push('❌ Enhanced GhostPIN SDK NOT loaded');
+            }
+
+            // Test 3: Try to create instance
+            try {
+                if (window.GhostPINEnhanced) {
+                    const instance = new window.GhostPINEnhanced({
+                        merchantId: 'test-merchant',
+                        apiUrl: 'http://localhost:3001'
+                    });
+                    results.push('✅ Enhanced SDK instance created successfully');
+                    console.log('Instance:', instance);
+                } else {
+                    results.push('❌ Cannot create instance - Enhanced SDK not loaded');
+                }
+            } catch (error) {
+                results.push('❌ Error creating instance: ' + error.message);
+                console.error('Instance creation error:', error);
+            }
+
+            // Display results
+            status.innerHTML = results.join('<br>');
+        }
+
+        // Auto-test on load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, testing SDKs...');
+            setTimeout(testSDKs, 1000); // Wait 1 second for scripts to load
+        });
+    </script>
+</body>
+</html>
