@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Security Center - FAKE WEBSITE</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #003087;
+            margin-bottom: 10px;
+        }
+        .warning-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #dc2626;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .product-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            border-color: #dc2626;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.1);
+        }
+        .product-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        .product-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #dc2626;
+            margin-bottom: 15px;
+        }
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .checkout-btn:hover {
+            background: linear-gradient(135deg, #b91c1c, #991b1b);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+        }
+        .warning-features {
+            background: #fef2f2;
+            border: 2px solid #dc2626;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .warning-features h3 {
+            color: #dc2626;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .warning-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .warning-item {
+            display: flex;
+            align-items: center;
+            color: #dc2626;
+            font-weight: 500;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        .status.warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">💳 PayPal Security Center</div>
+            <p>⚠️ THIS IS A FAKE WEBSITE - DEMO PURPOSES ONLY</p>
+            <div class="warning-badge">
+                ⚠️ PHISHING WEBSITE DETECTED
+            </div>
+        </div>
+
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="product-title">Premium Security Package</div>
+                <div class="product-price">$99.99</div>
+                <p>⚠️ This is a fake checkout - GhostPIN will detect and block this</p>
+                <button class="checkout-btn" data-ghostpin-checkout onclick="attemptFakePayment(9999, 'Fake Premium Package')">
+                    💳 Pay with PayPal (FAKE)
+                </button>
+            </div>
+
+            <div class="product-card">
+                <div class="product-title">Enterprise Security Suite</div>
+                <div class="product-price">$299.99</div>
+                <p>⚠️ This is a fake checkout - GhostPIN will detect and block this</p>
+                <button class="checkout-btn" data-ghostpin-checkout onclick="attemptFakePayment(29999, 'Fake Enterprise Suite')">
+                    💳 Pay with PayPal (FAKE)
+                </button>
+            </div>
+        </div>
+
+        <div class="warning-features">
+            <h3>⚠️ This Fake Website Will Be Detected By GhostPIN</h3>
+            <div class="warning-list">
+                <div class="warning-item">❌ Domain spoofing detected (paypal-security.com vs paypal.com)</div>
+                <div class="warning-item">❌ No proper merchant registration</div>
+                <div class="warning-item">❌ Missing visual nonce embedding</div>
+                <div class="warning-item">❌ No two-way handshake capability</div>
+                <div class="warning-item">❌ Suspicious domain patterns</div>
+                <div class="warning-item">❌ No cryptographic proof of authenticity</div>
+            </div>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <!-- GhostPIN Enhanced SDK (will detect this is fake) -->
+    <script src="../sdk/ghostpin-enhanced.js"></script>
+    <script 
+        src="../sdk/ghostpin.js"
+        data-merchant-id="fake-paypal"
+        data-api-url="http://localhost:3001">
+    </script>
+
+    <script>
+        let paymentInProgress = false;
+
+        async function attemptFakePayment(amount, description) {
+            if (paymentInProgress) {
+                showStatus('Payment already in progress...', 'info');
+                return;
+            }
+
+            paymentInProgress = true;
+            const btn = event.target;
+            const status = document.getElementById('status');
+            
+            try {
+                // Update UI
+                btn.disabled = true;
+                btn.textContent = '🔍 Detecting...';
+                showStatus('Attempting fake payment - GhostPIN will detect this...', 'warning');
+
+                // Initialize enhanced GhostPIN (this will fail)
+                if (!window.GhostPINEnhanced) {
+                    throw new Error('GhostPIN Enhanced SDK not loaded');
+                }
+
+                const ghostpin = new window.GhostPINEnhanced({
+                    merchantId: 'fake-paypal', // This merchant doesn't exist
+                    apiUrl: 'http://localhost:3001'
+                });
+
+                // Attempt two-way handshake (this will fail)
+                const result = await ghostpin.initiateHandshake({
+                    amount: amount,
+                    currency: 'USD',
+                    description: description,
+                    merchant_reference: 'fake-order-' + Date.now()
+                }, {
+                    targetElement: btn,
+                    requireBiometric: true
+                });
+
+                // This should never execute due to fraud detection
+                if (result.verified) {
+                    showStatus(`✅ Handshake successful!`, 'success');
+                } else {
+                    throw new Error(result.reason || 'Handshake verification failed');
+                }
+
+            } catch (error) {
+                console.error('GhostPIN fraud detection:', error);
+                
+                // Show fraud detection message
+                showStatus(`🛡️ GhostPIN FRAUD DETECTION: ${error.message}`, 'error');
+                btn.textContent = '🚫 BLOCKED BY GHOSTPIN';
+                btn.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
+                btn.disabled = true;
+                
+                // Show fraud indicators
+                setTimeout(() => {
+                    showFraudIndicators();
+                }, 2000);
+            } finally {
+                paymentInProgress = false;
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+
+        function showFraudIndicators() {
+            const indicators = [
+                '❌ Suspicious domain detected',
+                '❌ No merchant registration found',
+                '❌ Domain spoofing attempt detected',
+                '❌ Missing visual nonce embedding',
+                '❌ No two-way handshake capability',
+                '❌ High fraud risk score detected'
+            ];
+
+            let message = '🛡️ GhostPIN Fraud Detection Results:\n\n';
+            indicators.forEach(indicator => {
+                message += indicator + '\n';
+            });
+            message += '\n✅ Payment BLOCKED - User protected from phishing!';
+
+            showStatus(message, 'error');
+        }
+
+        // Listen for GhostPIN events
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('⚠️ FAKE PayPal Website Loaded');
+            console.log('This is a PHISHING website that will be detected by GhostPIN');
+            console.log('Click any checkout button to see fraud detection in action!');
+            
+            // Show initial warning
+            showStatus('⚠️ This is a FAKE website - GhostPIN will detect and block payments', 'warning');
+        });
+    </script>
+</body>
+</html>

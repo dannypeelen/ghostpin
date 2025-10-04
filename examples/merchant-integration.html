@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GhostPIN Integration Example</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+        .product {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .product-info h3 {
+            margin: 0 0 5px 0;
+            color: #1f2937;
+        }
+        .product-info p {
+            margin: 0;
+            color: #6b7280;
+        }
+        .price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #059669;
+        }
+        .checkout-section {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .checkout-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        .checkout-btn:active {
+            transform: translateY(0);
+        }
+        .checkout-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        .features {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+        }
+        .features h4 {
+            margin: 0 0 10px 0;
+            color: #1e40af;
+        }
+        .features ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .features li {
+            margin-bottom: 5px;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🛡️ Secure Store</div>
+            <p>Protected by GhostPIN - Anti-Phishing Payment Verification</p>
+        </div>
+
+        <div class="product">
+            <div class="product-info">
+                <h3>Premium Security Package</h3>
+                <p>Advanced fraud protection with biometric authentication</p>
+            </div>
+            <div class="price">$99.99</div>
+        </div>
+
+        <div class="checkout-section">
+            <button id="checkout-btn" class="checkout-btn" onclick="initiateSecurePayment()">
+                🔐 Pay Securely with GhostPIN
+            </button>
+            <div id="status"></div>
+        </div>
+
+        <div class="features">
+            <h4>🛡️ GhostPIN Security Features:</h4>
+            <ul>
+                <li>Visual nonce embedding prevents page tampering</li>
+                <li>WebAuthn biometric authentication (Face ID, Touch ID, hardware keys)</li>
+                <li>Cryptographic proof of page authenticity</li>
+                <li>Real-time fraud detection and blocking</li>
+                <li>Zero biometric data storage - privacy first</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- GhostPIN SDK -->
+    <script 
+        src="sdk/ghostpin.js"
+        data-merchant-id="demo-merchant"
+        data-api-url="http://localhost:3001">
+    </script>
+
+    <script>
+        let paymentInProgress = false;
+
+        async function initiateSecurePayment() {
+            if (paymentInProgress) {
+                showStatus('Payment already in progress...', 'info');
+                return;
+            }
+
+            paymentInProgress = true;
+            const btn = document.getElementById('checkout-btn');
+            const status = document.getElementById('status');
+            
+            try {
+                // Update UI
+                btn.disabled = true;
+                btn.textContent = '🔐 Verifying...';
+                showStatus('Initiating GhostPIN verification...', 'info');
+
+                // Initialize GhostPIN if not already done
+                if (!window.GhostPIN) {
+                    throw new Error('GhostPIN SDK not loaded');
+                }
+
+                // Verify payment with GhostPIN
+                const result = await window.GhostPIN.verifyPayment({
+                    amount: 9999, // $99.99 in cents
+                    currency: 'USD',
+                    description: 'Premium Security Package',
+                    merchant_reference: 'order-' + Date.now()
+                }, {
+                    targetElement: btn,
+                    requireBiometric: true,
+                    fallbackToOTP: true
+                });
+
+                if (result.verified) {
+                    showStatus(`✅ Payment verified! Attestation score: ${(result.attestation_score * 100).toFixed(1)}%`, 'success');
+                    btn.textContent = '✅ Payment Verified';
+                    btn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                    
+                    // Simulate successful payment processing
+                    setTimeout(() => {
+                        processPayment(result);
+                    }, 1000);
+                } else {
+                    throw new Error(result.reason || 'Verification failed');
+                }
+
+            } catch (error) {
+                console.error('GhostPIN verification failed:', error);
+                showStatus(`❌ Verification failed: ${error.message}`, 'error');
+                btn.textContent = '🔐 Try Again';
+                btn.disabled = false;
+            } finally {
+                paymentInProgress = false;
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+
+        function processPayment(verificationResult) {
+            showStatus('Processing payment...', 'info');
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                showStatus('🎉 Payment successful! Order confirmed.', 'success');
+                document.getElementById('checkout-btn').textContent = '✅ Payment Complete';
+                document.getElementById('checkout-btn').disabled = true;
+            }, 2000);
+        }
+
+        // Listen for GhostPIN events
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.GhostPIN) {
+                // Listen for verification events
+                window.GhostPIN.on('verification', (event) => {
+                    console.log('GhostPIN verification event:', event.detail);
+                });
+
+                // Listen for errors
+                window.GhostPIN.on('error', (event) => {
+                    console.error('GhostPIN error:', event.detail);
+                    showStatus(`GhostPIN Error: ${event.detail.message}`, 'error');
+                });
+
+                // Listen for WebAuthn events
+                window.GhostPIN.on('webauthn-start', (event) => {
+                    showStatus('🔐 Please authenticate with your device...', 'info');
+                });
+
+                window.GhostPIN.on('webauthn-complete', (event) => {
+                    showStatus('✅ Biometric authentication successful!', 'success');
+                });
+            }
+        });
+
+        // Demo: Show GhostPIN features
+        function showGhostPINFeatures() {
+            const features = [
+                'Visual nonce embedded in checkout button',
+                'WebAuthn biometric authentication required',
+                'Cryptographic signature validation',
+                'Real-time fraud detection',
+                'Zero biometric data storage'
+            ];
+
+            console.log('🛡️ GhostPIN Security Features:');
+            features.forEach((feature, index) => {
+                setTimeout(() => {
+                    console.log(`${index + 1}. ${feature}`);
+                }, index * 500);
+            });
+        }
+
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🛡️ GhostPIN Demo Store Loaded');
+            console.log('Click the checkout button to see GhostPIN in action!');
+            showGhostPINFeatures();
+        });
+    </script>
+</body>
+</html>

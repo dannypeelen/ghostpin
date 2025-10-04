@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Store - Authentic Website</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #10b981;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .product-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            border-color: #2563eb;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
+        }
+        .product-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        .product-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #059669;
+            margin-bottom: 15px;
+        }
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .checkout-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        }
+        .security-features {
+            background: #f0f9ff;
+            border: 2px solid #2563eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .security-features h3 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .security-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .security-item {
+            display: flex;
+            align-items: center;
+            color: #1e40af;
+            font-weight: 500;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🛡️ Secure Store</div>
+            <p>Protected by GhostPIN - Anti-Phishing Payment Verification</p>
+            <div class="verified-badge">
+                ✅ Verified Authentic Website
+            </div>
+        </div>
+
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="product-title">Premium Security Package</div>
+                <div class="product-price">$99.99</div>
+                <p>Advanced fraud protection with biometric authentication</p>
+                <button class="checkout-btn" data-ghostpin-checkout onclick="initiateSecurePayment(9999, 'Premium Security Package')">
+                    🔐 Pay Securely with GhostPIN
+                </button>
+            </div>
+
+            <div class="product-card">
+                <div class="product-title">Enterprise Security Suite</div>
+                <div class="product-price">$299.99</div>
+                <p>Complete enterprise-grade security solution</p>
+                <button class="checkout-btn" data-ghostpin-checkout onclick="initiateSecurePayment(29999, 'Enterprise Security Suite')">
+                    🔐 Pay Securely with GhostPIN
+                </button>
+            </div>
+        </div>
+
+        <div class="security-features">
+            <h3>🛡️ GhostPIN Security Features</h3>
+            <div class="security-list">
+                <div class="security-item">✅ Visual nonce embedding prevents page tampering</div>
+                <div class="security-item">✅ WebAuthn biometric authentication (Face ID, Touch ID, hardware keys)</div>
+                <div class="security-item">✅ Cryptographic proof of page authenticity</div>
+                <div class="security-item">✅ Real-time fraud detection and blocking</div>
+                <div class="security-item">✅ Zero biometric data storage - privacy first</div>
+                <div class="security-item">✅ Two-way handshake mutual authentication</div>
+            </div>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <!-- GhostPIN Enhanced SDK -->
+    <script src="../sdk/ghostpin-enhanced.js"></script>
+    <script 
+        src="../sdk/ghostpin.js"
+        data-merchant-id="secure-store"
+        data-api-url="http://localhost:3001">
+    </script>
+
+    <script>
+        let paymentInProgress = false;
+
+        async function initiateSecurePayment(amount, description) {
+            if (paymentInProgress) {
+                showStatus('Payment already in progress...', 'info');
+                return;
+            }
+
+            paymentInProgress = true;
+            const btn = event.target;
+            const status = document.getElementById('status');
+            
+            try {
+                // Update UI
+                btn.disabled = true;
+                btn.textContent = '🔐 Verifying...';
+                showStatus('Initiating GhostPIN two-way handshake...', 'info');
+
+                // Initialize enhanced GhostPIN
+                if (!window.GhostPINEnhanced) {
+                    throw new Error('GhostPIN Enhanced SDK not loaded');
+                }
+
+                const ghostpin = new window.GhostPINEnhanced({
+                    merchantId: 'secure-store',
+                    apiUrl: 'http://localhost:3001'
+                });
+
+                // Initiate two-way handshake
+                const result = await ghostpin.initiateHandshake({
+                    amount: amount,
+                    currency: 'USD',
+                    description: description,
+                    merchant_reference: 'order-' + Date.now()
+                }, {
+                    targetElement: btn,
+                    requireBiometric: true
+                });
+
+                if (result.verified) {
+                    showStatus(`✅ Two-way handshake successful! Risk score: ${(result.risk_score * 100).toFixed(1)}%`, 'success');
+                    btn.textContent = '✅ Handshake Verified';
+                    btn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                    
+                    // Simulate successful payment processing
+                    setTimeout(() => {
+                        processPayment(result);
+                    }, 1000);
+                } else {
+                    throw new Error(result.reason || 'Handshake verification failed');
+                }
+
+            } catch (error) {
+                console.error('GhostPIN handshake failed:', error);
+                showStatus(`❌ Handshake failed: ${error.message}`, 'error');
+                btn.textContent = '🔐 Try Again';
+                btn.disabled = false;
+            } finally {
+                paymentInProgress = false;
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+
+        function processPayment(handshakeResult) {
+            showStatus('Processing payment with verified handshake...', 'info');
+            
+            setTimeout(() => {
+                showStatus('🎉 Payment successful! Two-way authentication completed.', 'success');
+            }, 2000);
+        }
+
+        // Listen for GhostPIN events
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🛡️ Authentic Secure Store Loaded');
+            console.log('This is a REAL website with proper GhostPIN integration');
+            console.log('Click any checkout button to see the two-way handshake in action!');
+        });
+    </script>
+</body>
+</html>
