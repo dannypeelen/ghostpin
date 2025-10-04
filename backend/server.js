@@ -5,6 +5,7 @@ const path = require('path');
 require('dotenv').config();
 
 const verifierRoutes = require('./routes/verifier');
+const gatewayRoutes = require('./routes/gateway');
 const analyticsRoutes = require('./routes/analytics');
 const dashboardRoutes = require('./routes/dashboard');
 const handshakeRoutes = require('./routes/handshake');
@@ -24,10 +25,13 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50kb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/sdk', express.static(path.join(__dirname, '../sdk')));
 app.use('/demo', express.static(path.join(__dirname, '../demo')));
+
+// GhostPIN verification endpoints (root scope)
+app.use('/', gatewayRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

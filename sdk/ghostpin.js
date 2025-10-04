@@ -136,6 +136,9 @@
       this.onConsent = typeof this.config.onConsent === 'function' ? this.config.onConsent : null;
       this.requireStrongestDefault = Boolean(this.config.requireStrongestFactor);
       this.sessionSecret = this.config.sessionSecret || null;
+      this.transports = Array.isArray(this.config.transports) && this.config.transports.length > 0
+        ? this.config.transports
+        : ['internal'];
     }
 
     /**
@@ -289,13 +292,20 @@
       const intentHash = await this.buildIntentHash(normalizedIntent);
       const ts = Date.now();
 
+      const domain = window.location.origin;
+
       const { visualNonce, visualNonceHash } = await this.generateVisualNonce({
         intentHash,
         targetElement,
         ts
       });
 
-      const domain = window.location.origin;
+      const visualNonceSig = await this.fetchVisualNonceSignature({
+        intentHash,
+        ts,
+        domain
+      });
+
       const enforceStrongest = requireStrongestFactor || this.requireStrongestDefault;
       let method = 'webauthn';
       let consentState = 'enabled';
@@ -373,16 +383,19 @@
             description: normalizedIntent.description,
             merchant_reference: normalizedIntent.merchant_reference
           },
-          visualNonce,
-          visualNonceHash,
-          method,
+        visualNonce,
+        visualNonceHash,
+        visualNonceSig,
+        method,
           webauthn: webauthnData,
           otp: otpData,
           device: deviceData,
           consent: consentState,
           uaHints: {
             platform: navigator.platform || null,
-            mobile: isMobileUserAgent()
+            mobile: isMobileUserAgent(),
+            screen: `${window.screen?.width || 0}x${window.screen?.height || 0}`,
+            language: navigator.language || null
           }
         };
 
@@ -436,7 +449,8 @@
         if (Array.isArray(this.config.allowCredentialIds) && this.config.allowCredentialIds.length > 0) {
           publicKey.allowCredentials = this.config.allowCredentialIds.map((id) => ({
             type: 'public-key',
-            id: base64UrlToArrayBuffer(id)
+            id: base64UrlToArrayBuffer(id),
+            transports: this.transports
           }));
         }
 
@@ -607,7 +621,7 @@
       });
     }
 
-    async sendVerificationRequest(payload) {
+  async sendVerificationRequest(payload) {
       const endpoint = resolveUrl(this.apiUrl, '/verify');
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), this.config.requestTimeout || 60000);
@@ -645,7 +659,7 @@
       }
     }
 
-    async hmacSha256Base64Url(secret, message) {
+  async hmacSha256Base64Url(secret, message) {
       const enc = new TextEncoder();
       const keyData = enc.encode(secret);
       const key = await crypto.subtle.importKey(
@@ -664,6 +678,31 @@
       return Array.from(new Uint8Array(buffer))
         .map((b) => b.toString(16).padStart(2, '0'))
         .join('');
+    }
+
+    async fetchVisualNonceSignature({ intentHash, ts, domain }) {
+      const endpoint = resolveUrl(this.apiUrl, '/nonce');
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          merchantId: this.merchantId,
+          domain,
+          ts,
+          intentHash
+        }),
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to sign visual nonce');
+      }
+
+      const data = await response.json();
+      if (!data?.visualNonceSig) {
+        throw new Error('Missing visual nonce signature');
+      }
+      return data.visualNonceSig;
     }
 
     wireCheckoutButtons() {

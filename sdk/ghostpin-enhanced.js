@@ -273,21 +273,11 @@
     /**
      * Utility: Generate visual nonce
      */
-    async generateVisualNonce(paymentIntent, targetElement) {
+    async generateVisualNonce(args) {
       if (typeof super.generateVisualNonce === 'function') {
-        return super.generateVisualNonce(paymentIntent, targetElement);
+        return super.generateVisualNonce(args);
       }
-
-      const timestamp = Math.floor(Date.now() / 1000);
-      const random = this.generateRandomBytes(32);
-      const nonceData = `${this.merchantId || ''}:${timestamp}:${JSON.stringify(paymentIntent)}:${random}`;
-      const nonce = await this.sha256(nonceData);
-
-      if (targetElement) {
-        await this.embedVisualNonce(targetElement, nonce);
-      }
-
-      return nonce;
+      throw new Error('GhostPIN base generateVisualNonce unavailable');
     }
 
     /**
@@ -329,7 +319,8 @@
       }
 
       try {
-        element.setAttribute('data-ghostpin-nonce', nonce);
+        const value = Array.isArray(nonce) ? nonce.join('') : nonce;
+        element.setAttribute('data-ghostpin-nonce', value);
         element.style.border = '2px solid #10b981';
         element.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.3)';
       } catch (error) {
