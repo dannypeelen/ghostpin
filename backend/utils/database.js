@@ -103,6 +103,23 @@ async function createTables() {
       )
     `);
 
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS handshake_logs (
+        id SERIAL PRIMARY KEY,
+        merchant_id VARCHAR(255) NOT NULL,
+        origin VARCHAR(255) NOT NULL,
+        handshake_id VARCHAR(255) NOT NULL,
+        verified BOOLEAN NOT NULL,
+        reason TEXT,
+        risk_score DECIMAL(3,2),
+        fraud_indicators JSONB,
+        step VARCHAR(100),
+        ip_address INET,
+        user_agent TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+
     console.log('✅ Database tables created/verified');
     
   } catch (error) {

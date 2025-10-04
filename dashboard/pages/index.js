@@ -17,6 +17,7 @@ import FraudAlerts from '../components/FraudAlerts';
 import RecentActivity from '../components/RecentActivity';
 
 export default function Dashboard() {
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
   const [merchantId, setMerchantId] = useState('demo-merchant');
   const [metrics, setMetrics] = useState(null);
   const [charts, setCharts] = useState(null);
@@ -34,9 +35,9 @@ export default function Dashboard() {
     try {
       setLoading(true);
       const [metricsRes, chartsRes, alertsRes] = await Promise.all([
-        fetch(`/api/dashboard/metrics/${merchantId}?period=24h`),
-        fetch(`/api/dashboard/charts/${merchantId}?period=24h`),
-        fetch(`/api/dashboard/alerts/${merchantId}?status=unresolved`)
+        fetch(`${apiBaseUrl}/api/dashboard/metrics/${merchantId}?period=24h`),
+        fetch(`${apiBaseUrl}/api/dashboard/charts/${merchantId}?period=24h`),
+        fetch(`${apiBaseUrl}/api/dashboard/alerts/${merchantId}?status=unresolved`)
       ]);
 
       if (!metricsRes.ok || !chartsRes.ok || !alertsRes.ok) {
