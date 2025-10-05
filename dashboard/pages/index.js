@@ -16,6 +16,8 @@ import DomainAnalysis from '../components/DomainAnalysis';
 import FraudAlerts from '../components/FraudAlerts';
 import RecentActivity from '../components/RecentActivity';
 
+const enableMfaDemo = process.env.NEXT_PUBLIC_ENABLE_MFA_DEMO === 'true';
+
 export default function Dashboard() {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
   const [merchantId, setMerchantId] = useState('demo-merchant');
@@ -111,6 +113,15 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              {enableMfaDemo && (
+                <a
+                  href="/demo"
+                  className="px-4 py-2 border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 flex items-center"
+                >
+                  <Shield className="h-4 w-4 mr-2" />
+                  MFA Demo
+                </a>
+              )}
               <select 
                 value={merchantId}
                 onChange={(e) => setMerchantId(e.target.value)}

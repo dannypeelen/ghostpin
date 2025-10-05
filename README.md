@@ -38,6 +38,22 @@ npm run dev
 - Dashboard: http://localhost:3000
 - Health Check: http://localhost:3001/health
 
+## 🔑 MFA Demo Walkthrough
+
+GhostPIN ships with a self-contained MFA demo that showcases TOTP enrollment and verification without requiring user sign-in.
+
+1. Enable the feature flags in your environment:
+   ```env
+   ENABLE_MFA_DEMO=true
+   NEXT_PUBLIC_ENABLE_MFA_DEMO=true
+   ```
+   Optional: set `MFA_DEMO_TTL_SECONDS` to adjust how long demo sessions stay valid (default 300 seconds).
+   Frontend builds look for `NEXT_PUBLIC_*` values in `dashboard/.env.local`, so run `cp dashboard/.env.example dashboard/.env.local` to apply the defaults locally.
+2. Start the stack (`npm run dev`) and open `http://localhost:3000/demo`.
+3. Scan the QR code with any authenticator app, then enter the current 6-digit code to prove the second factor end-to-end.
+
+When deploying, keep the same flags enabled to offer the same experience remotely. Disable them by setting the values to `false` if the public demo should be hidden.
+
 ## 📁 Project Structure
 
 ```

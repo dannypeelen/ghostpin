@@ -9,6 +9,9 @@ const gatewayRoutes = require('./routes/gateway');
 const analyticsRoutes = require('./routes/analytics');
 const dashboardRoutes = require('./routes/dashboard');
 const handshakeRoutes = require('./routes/handshake');
+
+const enableMfaDemo = process.env.ENABLE_MFA_DEMO === 'true';
+const demoMfaRoutes = enableMfaDemo ? require('./routes/demoMfa') : null;
 const { initializeDatabase } = require('./utils/database');
 const { initializeRedis } = require('./utils/redis');
 
@@ -57,6 +60,10 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/verify-handshake', handshakeRoutes);
 
+if (enableMfaDemo && demoMfaRoutes) {
+  app.use('/api/demo-mfa', demoMfaRoutes);
+}
+
 // Error handling
 app.use((err, req, res, next) => {
   console.error('Error:', err);
@@ -82,6 +89,11 @@ async function startServer() {
       console.log(`📊 Health check: http://localhost:${PORT}/health`);
       console.log(`🔹 Real site: http://localhost:${PORT}/real`);
       console.log(`🔸 Scam site: http://localhost:${PORT}/scam`);
+      if (enableMfaDemo) {
+        console.log(`🔐 MFA demo API: http://localhost:${PORT}/api/demo-mfa`);
+      } else {
+        console.log('ℹ️ Set ENABLE_MFA_DEMO=true to enable MFA demo endpoints.');
+      }
     });
   } catch (error) {
     console.error('Failed to start server:', error);

@@ -347,6 +347,308 @@
             color: #dbeafe;
         }
 
+        .verification-summary {
+            margin-top: clamp(24px, 4vw, 36px);
+            padding: clamp(20px, 3vw, 32px);
+            border-radius: 24px;
+            border: 1px solid rgba(59, 130, 246, 0.28);
+            background: linear-gradient(145deg, rgba(30, 64, 175, 0.18), rgba(14, 165, 233, 0.12));
+            display: grid;
+            gap: 16px;
+            transition: opacity 0.2s ease;
+        }
+
+        .verification-summary[data-state="hidden"] {
+            display: none;
+        }
+
+        .verification-summary h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #bfdbfe;
+            letter-spacing: -0.01em;
+        }
+
+        .verification-summary ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+
+        .verification-summary li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            color: rgba(226, 232, 240, 0.88);
+        }
+
+        .verification-summary .check-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid currentColor;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .verification-summary .check-icon[data-state="pass"] {
+            color: #34d399;
+        }
+
+        .verification-summary .check-icon[data-state="pass"]::after {
+            content: '✓';
+        }
+
+        .verification-summary .check-icon[data-state="fail"] {
+            color: #f87171;
+        }
+
+        .verification-summary .check-icon[data-state="fail"]::after {
+            content: '✕';
+        }
+
+        .mfa-demo {
+            margin-top: clamp(36px, 6vw, 60px);
+            padding: clamp(24px, 4vw, 40px);
+            border-radius: 28px;
+            background: linear-gradient(145deg, rgba(59, 130, 246, 0.16), rgba(14, 165, 233, 0.08));
+            border: 1px solid rgba(96, 165, 250, 0.28);
+            display: grid;
+            gap: clamp(18px, 3vw, 28px);
+        }
+
+        .mfa-demo:not(.is-open) {
+            display: none;
+        }
+
+        .mfa-demo-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        .mfa-demo-header h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #bfdbfe;
+            letter-spacing: -0.01em;
+        }
+
+        .mfa-demo-header p {
+            margin: 6px 0 0;
+            font-size: 15px;
+            color: rgba(226, 232, 240, 0.8);
+            max-width: 520px;
+            line-height: 1.5;
+        }
+
+        .mfa-refresh {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(96, 165, 250, 0.45);
+            background: rgba(30, 64, 175, 0.3);
+            color: #bfdbfe;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: background 0.25s ease, border 0.25s ease, transform 0.2s ease;
+        }
+
+        .mfa-refresh:hover:not([disabled]) {
+            background: rgba(59, 130, 246, 0.35);
+            border-color: rgba(191, 219, 254, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .mfa-refresh[disabled] {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .mfa-demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: clamp(20px, 4vw, 32px);
+            align-items: stretch;
+            transition: opacity 0.25s ease;
+        }
+
+        .mfa-demo-grid.loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .mfa-demo-grid.needs-action {
+            animation: mfaPulse 0.9s ease-in-out 0s 2;
+        }
+
+        .mfa-demo-grid.verified .mfa-qr-frame {
+            border-color: rgba(34, 197, 94, 0.45);
+            box-shadow: 0 16px 32px rgba(34, 197, 94, 0.25);
+        }
+
+        @keyframes mfaPulse {
+            0%, 100% {
+                box-shadow: none;
+            }
+            50% {
+                box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.25);
+            }
+        }
+
+        .mfa-qr-card {
+            background: rgba(15, 23, 42, 0.35);
+            border-radius: 22px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            padding: clamp(20px, 3vw, 28px);
+            display: grid;
+            gap: 16px;
+            align-content: start;
+        }
+
+        .mfa-qr-frame {
+            width: min(220px, 100%);
+            height: min(220px, 60vw);
+            margin: 0 auto;
+            border-radius: 18px;
+            background: rgba(30, 64, 175, 0.18);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .mfa-qr-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .mfa-hint {
+            margin: 0;
+            font-size: 14px;
+            color: rgba(191, 219, 254, 0.8);
+            text-align: center;
+        }
+
+        .mfa-secret {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: grid;
+            gap: 6px;
+        }
+
+        .mfa-secret span {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(148, 163, 184, 0.8);
+        }
+
+        .mfa-secret code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 14px;
+            word-break: break-all;
+            color: #e2e8f0;
+        }
+
+        .mfa-form {
+            background: rgba(15, 23, 42, 0.35);
+            border-radius: 22px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            padding: clamp(20px, 3vw, 28px);
+            display: grid;
+            gap: 16px;
+            align-content: start;
+        }
+
+        .mfa-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(226, 232, 240, 0.9);
+        }
+
+        .mfa-input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(96, 165, 250, 0.35);
+            background: rgba(15, 23, 42, 0.6);
+            color: #f8fafc;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.34em;
+            text-align: center;
+        }
+
+        .mfa-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22);
+            border-color: rgba(191, 219, 254, 0.6);
+        }
+
+        .mfa-input[disabled] {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .mfa-submit {
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, #38bdf8 0%, #2563eb 60%, #312e81 100%);
+            color: #f8fafc;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.25s ease;
+        }
+
+        .mfa-submit:hover:not([disabled]) {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.35);
+        }
+
+        .mfa-submit[disabled] {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .mfa-feedback {
+            margin: 8px 0 0;
+            font-size: 14px;
+            color: rgba(226, 232, 240, 0.82);
+        }
+
+        .mfa-feedback.success {
+            color: #a7f3d0;
+        }
+
+        .mfa-feedback.error {
+            color: #fecaca;
+        }
+
+        .mfa-feedback.info {
+            color: #bfdbfe;
+        }
+
+        .mfa-feedback.warning {
+            color: #fde68a;
+        }
+
         @media (max-width: 720px) {
             body {
                 padding: 32px 18px 48px;
@@ -378,7 +680,7 @@
         }
     </style>
 </head>
-<body>
+<body data-demo-context="real">
     <div class="container">
         <header class="nav">
             <div class="brand">
@@ -475,7 +777,50 @@
             </div>
         </section>
 
+        <section class="mfa-demo">
+            <div class="mfa-demo-header">
+                <div>
+                    <h3>Step-up verification ready</h3>
+                    <p>Scan the QR code with your authenticator app, then enter the 6-digit code to unlock the checkout flow on this trusted page.</p>
+                </div>
+                <button type="button" class="mfa-refresh" data-mfa-refresh>New session</button>
+            </div>
+            <div class="mfa-demo-grid" data-mfa-demo>
+                <div class="mfa-qr-card">
+                    <div class="mfa-qr-frame">
+                        <img data-mfa-qr alt="Scan this QR code with your authenticator app" style="display:none;" />
+                    </div>
+                    <p class="mfa-hint" data-mfa-hint>A one-time integrity code will appear after you start checkout.</p>
+                    <div class="mfa-secret">
+                        <span>Secret (base32)</span>
+                        <code data-mfa-secret>Pending checkout</code>
+                    </div>
+                </div>
+                <form class="mfa-form" data-mfa-form>
+                    <label class="mfa-label" for="mfa-otp">Enter the current 6-digit code</label>
+                    <input
+                        id="mfa-otp"
+                        class="mfa-input"
+                        data-mfa-otp
+                        type="text"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        maxlength="6"
+                        autocomplete="one-time-code"
+                        placeholder="123456"
+                        disabled
+                    />
+                    <button class="mfa-submit" type="submit" disabled>Verify code</button>
+                    <p class="mfa-feedback info" data-mfa-feedback>Generating a secure MFA session…</p>
+                </form>
+            </div>
+        </section>
+
         <div id="status"></div>
+        <div class="verification-summary" data-verification-summary data-state="hidden">
+            <h4 id="verification-summary-title" data-verification-title>GhostPIN Attestation Results</h4>
+            <ul data-verification-list aria-live="polite"></ul>
+        </div>
     </div>
 
     <!-- GhostPIN SDK -->
@@ -490,6 +835,7 @@
             "riskPolicy": "secure_store_high_assurance"
         }
     </script>
+    <script src="/demo/mfa-demo.js"></script>
     <script src="/demo/ghostpin-checkout.js"></script>
 </body>
 </html>
